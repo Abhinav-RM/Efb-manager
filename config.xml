@@ -1,13 +1,18 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.jarviz.efbmanager" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+<widget id="com.jarviz.efbmanager" version="1.0.1" xmlns="http://www.w3.org/ns/widgets">
     <name>EFB MANAGER</name>
     <description>Football Tournament Manager for EFB CUP</description>
     <author email="jarviz@nothing.com">Jarviz</author>
     
     <content src="index.html" />
-    
     <icon src="icon.png" />
 
+    <preference name="SplashScreenDelay" value="0" />
+    <preference name="AutoHideSplashScreen" value="true" />
+    <preference name="FadeSplashScreen" value="false" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="none" />
+    
     <preference name="Orientation" value="portrait" />
     <preference name="Fullscreen" value="true" />
 </widget>
