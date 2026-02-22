@@ -1057,12 +1057,82 @@ function updDash(){
   document.getElementById('if-tt').textContent=tt;document.getElementById('if-mg').textContent=S.mc;
 }
 
-/* ══ EXPORT — Cordova-compatible download ══ */
-function expPg(cId,fname){
-  AX.play('exp');toast('⏳ GENERATING IMAGE...');
-  const el=document.getElementById(cId);
-  html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#06060e',allowTaint:true,logging:false})
-    .then(canvas=>{
+/* ══ EXPORT — Now works on Android APK ══ */
+function expPg(cId, fname) {
+  AX.play('exp');
+  toast('⏳ GENERATING IMAGE...');
+  const el = document.getElementById(cId);
+
+  html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#06060e',
+    allowTaint: true
+  }).then(canvas => {
+    const dataUrl = canvas.toDataURL('image/png');
+    
+    // Check if we are running as an installed App
+    if (window.cordova) {
+      const b64 = dataUrl.split(',')[1];
+      const filename = fname + "_" + Date.now() + ".png";
+      
+      // We target the 'Pictures' folder so it shows up in your Gallery
+      window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, (dir) => {
+        dir.getDirectory("Pictures", { create: true }, (pixDir) => {
+          pixDir.getFile(filename, { create: true }, (fileEntry) => {
+            fileEntry.createWriter((fileWriter) => {
+              fileWriter.onwriteend = () => {
+                toast('✅ SAVED TO GALLERY/PICTURES');
+              };
+              fileWriter.onerror = (e) => {
+                console.error("Write failed", e);
+                toast('Export failed', 'err');
+              };
+              const blob = b64toBlob(b64, 'image/png');
+              fileWriter.write(blob);
+            });
+          });
+        });
+      }, (err) => {
+        console.error("FileSystem Error", err);
+        // If the fancy save fails, try the basic one
+        fallbackDownload(dataUrl, fname);
+      });
+    } else {
+      fallbackDownload(dataUrl, fname);
+    }
+  }).catch(e => {
+    console.error(e);
+    toast('Export failed — try again', 'err');
+  });
+}
+
+// Helper to convert the image data for Android storage
+function b64toBlob(b64Data, contentType) {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+  return new Blob(byteArrays, { type: contentType });
+}
+
+function fallbackDownload(dataUrl, fname) {
+  const link = document.createElement('a');
+  link.href = dataUrl;
+  link.download = fname + '.png';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  toast('✓ IMAGE EXPORTED: ' + fname + '.png');
+}
+  
       /* Try Cordova file system first, then browser download */
       const dataUrl=canvas.toDataURL('image/png');
       if(window.cordova&&window.resolveLocalFileSystemURL){
