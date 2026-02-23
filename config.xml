@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.jarviz.efbmanager" version="1.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="com.jarviz.efbmanager" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>EFB MANAGER</name>
     <description>Football Tournament Manager for EFB CUP</description>
     <author email="jarviz@nothing.com">Jarviz</author>
@@ -9,14 +9,18 @@
 
     <plugin name="cordova-plugin-file" />
     <plugin name="cordova-plugin-android-permissions" />
+    <plugin name="cordova-plugin-media-scanner" />
 
     <config-file target="AndroidManifest.xml" parent="/*">
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" android:maxSdkVersion="30" />
     </config-file>
 
     <preference name="SplashScreenDelay" value="0" />
     <preference name="AutoHideSplashScreen" value="true" />
     <preference name="Orientation" value="portrait" />
     <preference name="Fullscreen" value="true" />
-</widget>
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+</widget.xml>
+    
